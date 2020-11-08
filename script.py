@@ -25,7 +25,7 @@ def make_maze(n, m):
     maze[goal_position[0]][goal_position[1]] = "x"
     return maze
 
-def adjacency(maze):
+def adjacency_matrix(maze):
     # Tamaño de la matriz de adyacencia
     n = len(maze)
     m = len(maze[0])
