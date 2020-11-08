@@ -1,4 +1,5 @@
 from maze import Maze
 
-maze = Maze(2,4)
+maze = Maze(4,4)
+maze.showMaze()
 maze.showAdjacencyMatrix()

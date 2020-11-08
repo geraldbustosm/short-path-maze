@@ -3,6 +3,9 @@ import random
 
 class Maze:
     def __init__(self, n, m):
+        self.__makeMaze(n, m)
+
+    def __makeMaze(self, n, m):
         # Valores iniciales para la posición de partida y posición final
         spirit_position = [random.randint(0, n-1), random.randint(0, m-1)]
         goal_position = [random.randint(0, n-1), random.randint(0, m-1)]
@@ -25,7 +28,7 @@ class Maze:
         self.__maze[spirit_position[0]][spirit_position[1]] = "s"
         self.__maze[goal_position[0]][goal_position[1]] = "x"
 
-    def __adjacency_matrix(self):
+    def __adjacencyMatrix(self):
         # Tamaño de la matriz de adyacencia
         n = len(self.__maze)
         m = len(self.__maze[0])
@@ -56,6 +59,9 @@ class Maze:
                     adjacency[numered_matrix[i][j]][numered_matrix[i-1][j]] = 1
 
         return adjacency
-    
+
+    def showMaze(self):
+        print(np.array(self.__maze))
+
     def showAdjacencyMatrix(self):
-        print(self.__adjacency_matrix())
+        print(self.__adjacencyMatrix())
