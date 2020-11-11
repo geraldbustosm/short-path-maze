@@ -1,5 +1,5 @@
 from maze import Maze
 
-maze = Maze(4,4)
+maze = Maze(5,7)
 maze.showMaze()
-maze.showAdjacencyMatrix()
+print(maze.findPath())
