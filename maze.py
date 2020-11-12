@@ -26,7 +26,7 @@ class Maze:
         
         # Creamos el casillero de inicio y de fin
         self.start = Square(random.randint(0, self.n-1), random.randint(0, self.m-1), 0, False, False, False, False)
-        self.end = Square(random.randint(0, self.n-1), random.randint(0, self.m-1), -1, False, False, False, False)
+        self.end = Square(random.randint(0, self.n-1), random.randint(0, self.m-1), 2, False, False, False, False)
 
         # En caso de que la posición de partida sea igual a la final,
         # buscamos un nuevo valor para la posición final
@@ -43,13 +43,17 @@ class Maze:
         visited = np.zeros((self.n, self.m), dtype=bool)
         movements = {}
         queue.append(self.start)
-
+        self.historycQueue = ""
         while(queue):
-            for sq in queue:
-                print('(' + str(sq.x) + ',' + str(sq.y) + ')', end=" - ")
             
-            print("")
-
+            # El siguiente ciclo for es netamente para poder imprimir la cola que se fue generando,
+            # no es parte fundamental del codigo y solo se utilizirá en la imagen resultante
+            # para entregar más detalles del proceso
+            for sq in queue:
+                self.historycQueue = self.historycQueue + '(' + str(sq.x) + ',' + str(sq.y) + ')' + ' '
+            self.historycQueue = self.historycQueue + '\n'
+            
+            # Acá comienza lo medular
             square = queue.pop(0)
             
             # Si la posición del nodo (square) es igual a la posición de la meta, lo encontramos
@@ -95,7 +99,7 @@ class Maze:
 
                 # Agregamos a la cola los casilleros con menor costo primero
                 if squarePriorities is not None:
-                    for squarePriority in squarePriorities:
+                    for squarePriority in reversed(squarePriorities):
                         queue.append(squarePriority)
 
                 # Marcamos como visitado
@@ -103,19 +107,25 @@ class Maze:
 
         return None
     
-    def findPath(self):
+    def __getPath(self):
         # Recorreremos el diccionario para saber de donde proviene la solución si es que existe
         movements = self.__findPath()
-        path = []
+        self.__path = []
 
         if(movements is not None):
-            path.append(self.end)
+            self.__path.append(self.end)
             movement = movements[self.end]
             while(movement != self.start):
-                path.append(movement)
+                self.__path.append(movement)
                 movement = movements[movement]
-            path.append(self.start)
-        return path
+            self.__path.append(self.start)
+        
+        if(self.__path):
+            for p in reversed(self.__path):
+                print('(' + str(p.x) + ',' + str(p.y) + ')', end=" ")
+        else:
+            print("No existe solución")
+
 
     def showMaze(self):
         for i in range(self.n):
@@ -137,22 +147,29 @@ class Maze:
 
         return sorted(squares, key=lambda square: square.cost)
     
-    def drawMaze(self):
+    def drawSolution(self):
+        # Primero ejecutamos el algoritmo
+        self.__getPath()
+
         # Amplificator
         amplificator = 100
 
+        # Espacio entre grillas
+        space = 40
+
         # Tamaño de la grilla
         h = self.n * amplificator
-        w = self.m * amplificator
+        w = 2 * self.m * amplificator + space
         obstacleBorder = 95
         
         # Creando una imagen
-        imgFile = Image.new("RGB", (w, h)) 
+        imgFile = Image.new("RGBA", (w, h)) 
         img = ImageDraw.Draw(imgFile)
 
         # Obteniendo una fuente
         font = ImageFont.truetype("arial.ttf", 20)
 
+        # Dibujando el tablero
         for i in range(self.n):
             for j in range(self.m):
                 # Posición inicial del rectangulo
@@ -200,4 +217,54 @@ class Maze:
                 if((self.__maze[i][j].upObstacle and i-1 >= 0) or (i-1 >= 0 and self.__maze[i-1][j].downObstacle)):
                     shape = [(b, a-diff), (y, x-diff-obstacleBorder)]
                     img.rectangle(shape, fill = color)
+
+        # Dibujando el tablero solución
+        for i in range(self.n):
+            for j in range(self.m):
+                # Posición inicial del rectangulo
+                a = i * amplificator
+                b = j * amplificator + (w/2)
+
+                # Posición final del rectangulo
+                x = (i + 1) * amplificator
+                y = (j + 1) * amplificator + (w/2)
+
+                # Creando la forma del rectangulo con dos pares ordenados (w1, h1) y (w2, h2)
+                shape = [(b, a), (y, x)]
+
+                # Info del nodo
+                text = '(' + str(self.__maze[i][j].x) + ', ' + str(self.__maze[i][j].y) + ', ' + str(self.__maze[i][j].cost) + ')'
+                
+                # Pintamos las casillas blanco
+                color = "white"
+
+                img.rectangle(shape, fill = color, outline ="#658085")
+                img.text((b+5, a+40), text=text, font=font, fill = "black")
+        
+        # Pintando la ruta
+        if(self.__path):
+            for p in self.__path:
+                # Posición inicial del rectangulo
+                a = p.x * amplificator
+                b = p.y * amplificator + (w/2)
+
+                # Posición final del rectangulo
+                x = (p.x + 1) * amplificator
+                y = (p.y + 1) * amplificator + (w/2)
+
+                # Creando la forma del rectangulo con dos pares ordenados (w1, h1) y (w2, h2)
+                shape = [(b, a), (y, x)]
+
+                # Info del nodo
+                text = '(' + str(self.__maze[p.x][p.y].x) + ', ' + str(self.__maze[p.x][p.y].y) + ', ' + str(self.__maze[p.x][p.y].cost) + ')'
+                
+                # Pintamos las casillas blanco
+                color = "red"
+
+                img.rectangle(shape, fill = color, outline ="#658085")
+                img.text((b+5, a+40), text=text, font=font, fill = "black")
+
+                # Pintamos bordes si tiene obstaculos
+                color = "black"
+                diff = (amplificator - obstacleBorder)/2
         imgFile.show() 
