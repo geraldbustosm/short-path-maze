@@ -44,8 +44,13 @@ class Maze:
         queue.append(self.start)
 
         while(queue):
-            square = queue.pop(0)
+            for sq in queue:
+                print('(' + str(sq.x) + ',' + str(sq.y) + ')', end=" - ")
+            
+            print("")
 
+            square = queue.pop(0)
+            
             # Si la posición del nodo (square) es igual a la posición de la meta, lo encontramos
             if(square.x == self.end.x and square.y == self.end.y): return movements
 
@@ -89,8 +94,8 @@ class Maze:
 
                 # Agregamos a la cola los casilleros con menor costo primero
                 if squarePriorities is not None:
-                    for square in squarePriorities:
-                        queue.append(square)
+                    for squarePriority in squarePriorities:
+                        queue.append(squarePriority)
 
                 # Marcamos como visitado
                 visited[square.x][square.y] = True
@@ -99,8 +104,17 @@ class Maze:
     
     def findPath(self):
         # Recorreremos el diccionario para saber de donde proviene la solución si es que existe
-        path = self.__findPath()
-        
+        movements = self.__findPath()
+        path = []
+
+        if(movements is not None):
+            path.append(self.end)
+            movement = movements[self.end]
+            while(movement != self.start):
+                path.append(movement)
+                movement = movements[movement]
+            path.append(self.start)
+        return path
 
     def showMaze2(self):
         for i in range(self.n):
