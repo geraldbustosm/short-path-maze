@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from PIL import Image, ImageDraw
 from square import Square
 
 class Maze:
@@ -161,3 +162,60 @@ class Maze:
         if(squareUp is not None): squares.append(squareUp)
 
         return sorted(squares, key=lambda square: square.cost)
+    
+    def drawMaze(self):
+        # Amplificator
+        amplificator = 100
+
+        # Grid size
+        h = self.n * amplificator
+        w = self.m * amplificator
+        obstacleBorder = 95
+        # creating new Image object 
+        imgFile = Image.new("RGB", (w, h)) 
+        img = ImageDraw.Draw(imgFile)
+
+        for i in range(self.n):
+            for j in range(self.m):
+                # Posición inicial del rectangulo
+                a = i * amplificator
+                b = j * amplificator
+
+                # Posición final del rectangulo
+                x = (i + 1) * amplificator
+                y = (j + 1) * amplificator
+
+                # Creando la forma del rectangulo con dos pares ordenados (w1, h1) y (w2, h2)
+                shape = [(b, a), (y, x)]
+
+                # Pintamos la casilla segun el costo
+                if(self.__maze[i][j].cost == 0.5):
+                    color = "#cc3c39"
+                elif(self.__maze[i][j].cost == 1.2):
+                    color = "#ffd799"
+                elif(self.__maze[i][j].cost == 0):
+                    color = "#798ec7"
+                else:
+                    color = "green"
+                img.rectangle(shape, fill = color, outline ="#658085")
+
+                # Pintamos bordes si tiene obstaculos
+                color = "black"
+                diff = (amplificator - obstacleBorder)/2
+
+                if((self.__maze[i][j].rightObstacle and j+1 < self.m) or (j+1 < self.m and self.__maze[i][j+1].leftObstacle)):
+                    shape = [(b+diff+obstacleBorder, a), (y+diff, x)]
+                    img.rectangle(shape, fill = color)
+
+                if((self.__maze[i][j].downObstacle and i+1 < self.n) or (i+1 < self.n and self.__maze[i+1][j].upObstacle)):
+                    shape = [(b, a+diff+obstacleBorder), (y, x+diff)]
+                    img.rectangle(shape, fill = color)
+
+                if((self.__maze[i][j].leftObstacle and j-1 >= 0) or (j-1 >= 0 and self.__maze[i][j-1].rightObstacle)):
+                    shape = [(b-diff, a), (y-diff-obstacleBorder, x)]
+                    img.rectangle(shape, fill = color)
+
+                if((self.__maze[i][j].upObstacle and i-1 >= 0) or (i-1 >= 0 and self.__maze[i-1][j].downObstacle)):
+                    shape = [(b, a-diff), (y, x-diff-obstacleBorder)]
+                    img.rectangle(shape, fill = color)
+        imgFile.show() 
