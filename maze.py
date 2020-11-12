@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from square import Square
 
 class Maze:
@@ -117,32 +117,6 @@ class Maze:
             path.append(self.start)
         return path
 
-    def showMaze2(self):
-        for i in range(self.n):
-            for j in range(self.m):
-                if(self.__maze[i][j].cost == 0.5):
-                    if(self.__maze[i][j].leftObstacle):
-                        print('|', self.__maze[i][j].cost, ' ' , end='')
-                    if(self.__maze[i][j].rightObstacle):
-                        print(self.__maze[i][j].cost, '| ' , end='')
-                    if(self.__maze[i][j].upObstacle):
-                        print('0̅.̅5̅', ' ' , end='')
-                    if(self.__maze[i][j].downObstacle):
-                        print('0͟.͟5͟', ' ' , end='')
-                elif(self.__maze[i][j].cost == 1.2):
-                    if(self.__maze[i][j].leftObstacle):
-                        print('|', self.__maze[i][j].cost, ' ' , end='')
-                    if(self.__maze[i][j].rightObstacle):
-                        print(self.__maze[i][j].cost, '| ' , end='')
-                    if(self.__maze[i][j].upObstacle):
-                        print('1̅.̅2̅', ' ' , end='')
-                    if(self.__maze[i][j].downObstacle):
-                        print('1͟.͟2͟', ' ' , end='')
-                else:
-                    print(self.__maze[i][j].cost, ' ' , end='')
-                    
-            print("")
-
     def showMaze(self):
         for i in range(self.n):
             for j in range(self.m):
@@ -167,13 +141,17 @@ class Maze:
         # Amplificator
         amplificator = 100
 
-        # Grid size
+        # Tamaño de la grilla
         h = self.n * amplificator
         w = self.m * amplificator
         obstacleBorder = 95
-        # creating new Image object 
+        
+        # Creando una imagen
         imgFile = Image.new("RGB", (w, h)) 
         img = ImageDraw.Draw(imgFile)
+
+        # Obteniendo una fuente
+        font = ImageFont.truetype("arial.ttf", 20)
 
         for i in range(self.n):
             for j in range(self.m):
@@ -188,6 +166,9 @@ class Maze:
                 # Creando la forma del rectangulo con dos pares ordenados (w1, h1) y (w2, h2)
                 shape = [(b, a), (y, x)]
 
+                # Info del nodo
+                text = '(' + str(self.__maze[i][j].x) + ', ' + str(self.__maze[i][j].y) + ', ' + str(self.__maze[i][j].cost) + ')'
+                
                 # Pintamos la casilla segun el costo
                 if(self.__maze[i][j].cost == 0.5):
                     color = "#cc3c39"
@@ -198,6 +179,7 @@ class Maze:
                 else:
                     color = "green"
                 img.rectangle(shape, fill = color, outline ="#658085")
+                img.text((b+5, a+40), text=text, font=font, fill = "black")
 
                 # Pintamos bordes si tiene obstaculos
                 color = "black"
