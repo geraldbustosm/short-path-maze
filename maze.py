@@ -43,15 +43,14 @@ class Maze:
         visited = np.zeros((self.n, self.m), dtype=bool)
         movements = {}
         queue.append(self.start)
-        self.historycQueue = ""
+        self.__queueText = "Cola\n"
         while(queue):
-            
             # El siguiente ciclo for es netamente para poder imprimir la cola que se fue generando,
             # no es parte fundamental del codigo y solo se utilizirá en la imagen resultante
             # para entregar más detalles del proceso
             for sq in queue:
-                self.historycQueue = self.historycQueue + '(' + str(sq.x) + ',' + str(sq.y) + ')' + ' '
-            self.historycQueue = self.historycQueue + '\n'
+                self.__queueText = self.__queueText + '(' + str(sq.x) + ',' + str(sq.y) + ')' + ' '
+            self.__queueText = self.__queueText + '\n'
             
             # Acá comienza lo medular
             square = queue.pop(0)
@@ -119,14 +118,15 @@ class Maze:
                 self.__path.append(movement)
                 movement = movements[movement]
             self.__path.append(self.start)
-        
-        if(self.__path):
-            print("Ruta")
-            for p in reversed(self.__path):
-                print('(' + str(p.x) + ',' + str(p.y) + ')', end=" ")
-        else:
-            print("No existe solución")
 
+        # Concatenando en un string final
+        self.__pathText = ""
+        if(self.__path):
+            self.__pathText = "Ruta\n"
+            for p in reversed(self.__path):
+                self.__pathText =  self.__pathText + '(' + str(p.x) + ',' + str(p.y) + ')' + ' '
+        else:
+            self.__pathText = "No existe solución"
 
     def showMaze(self):
         for i in range(self.n):
@@ -158,13 +158,16 @@ class Maze:
         # Espacio entre grillas
         space = 40
 
+        # Ancho de una grilal
+        gridWith = self.m * amplificator
+
         # Tamaño de la grilla
         h = self.n * amplificator
-        w = 2 * self.m * amplificator + space
+        w = 3 * gridWith + space
         obstacleBorder = 95
         
         # Creando una imagen
-        imgFile = Image.new("RGBA", (w, h)) 
+        imgFile = Image.new("RGB", (w, h)) 
         img = ImageDraw.Draw(imgFile)
 
         # Obteniendo una fuente
@@ -224,11 +227,11 @@ class Maze:
             for j in range(self.m):
                 # Posición inicial del rectangulo
                 a = i * amplificator
-                b = j * amplificator + (w/2)
+                b = j * amplificator + (gridWith) + space
 
                 # Posición final del rectangulo
                 x = (i + 1) * amplificator
-                y = (j + 1) * amplificator + (w/2)
+                y = (j + 1) * amplificator + (gridWith) + space
 
                 # Creando la forma del rectangulo con dos pares ordenados (w1, h1) y (w2, h2)
                 shape = [(b, a), (y, x)]
@@ -242,16 +245,17 @@ class Maze:
                 img.rectangle(shape, fill = color, outline ="#658085")
                 img.text((b+5, a+40), text=text, font=font, fill = "black")
         
-        # Pintando la ruta
+        # Pintando la ruta y concatenando la respuesta para desplegar posteriormente a un lado
+        pathText = ""
         if(self.__path):
             for p in self.__path:
                 # Posición inicial del rectangulo
                 a = p.x * amplificator
-                b = p.y * amplificator + (w/2)
+                b = p.y * amplificator + (gridWith) + space
 
                 # Posición final del rectangulo
                 x = (p.x + 1) * amplificator
-                y = (p.y + 1) * amplificator + (w/2)
+                y = (p.y + 1) * amplificator + (gridWith) + space
 
                 # Creando la forma del rectangulo con dos pares ordenados (w1, h1) y (w2, h2)
                 shape = [(b, a), (y, x)]
@@ -268,4 +272,18 @@ class Maze:
                 # Pintamos bordes si tiene obstaculos
                 color = "black"
                 diff = (amplificator - obstacleBorder)/2
+
+                # Concatenando
+                pathText = pathText + '(' + str(p.x) + ', ' + str(p.y) + ')' + ' '
+
+        # Escribiendo la ruta y la cola
+        pathTextX = 2 * gridWith + 2*space
+        pathTextY = 20
+        queueX = 2 * gridWith + 2*space
+        queueY = 100
+
+        if(pathText != 'No existe solución'):
+            img.text((pathTextX, pathTextY), text=self.__pathText, font=font, fill = "white")
+            img.text((queueX, queueY), text=self.__queueText, font=font, fill = "white")
+
         imgFile.show() 
