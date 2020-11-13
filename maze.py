@@ -11,7 +11,7 @@ class Maze:
 
     def __makeMaze(self):
         
-        # Generando el tablero de tamaño nxm
+        # Generando un tablero aleatorio de tamaño nxm
         self.__maze = []
         for i in range(self.n):
             self.__maze.append([])
@@ -127,12 +127,6 @@ class Maze:
                 self.__pathText =  self.__pathText + '(' + str(p.x) + ',' + str(p.y) + ')' + ' '
         else:
             self.__pathText = "No existe solución"
-
-    def showMaze(self):
-        for i in range(self.n):
-            for j in range(self.m):
-                print(self.__maze[i][j].cost, ' ' , end='')
-            print("")
     
     def __getRandomCost(self):
         option = bool(random.getrandbits(1))
