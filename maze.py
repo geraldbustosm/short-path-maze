@@ -121,6 +121,7 @@ class Maze:
             self.__path.append(self.start)
         
         if(self.__path):
+            print("Ruta")
             for p in reversed(self.__path):
                 print('(' + str(p.x) + ',' + str(p.y) + ')', end=" ")
         else:
