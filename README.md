@@ -8,4 +8,5 @@ Este problema en particular, sus casillas no son costos temporales, sino que cor
 
 Cabe destacar que avanzar siempre por el casillero más rapido no siempre promete el mejor camino. Para escoger la mejor es recomendable utilizar otros algoritmos como Dijkstra.
 
+A continuación visualizamos lo que genera el programa al generar un tablero de 6x5 aleatorio.
 ![Tablero de 6x5](https://i.imgur.com/o3pjU21.png)
