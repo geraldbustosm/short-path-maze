@@ -92,11 +92,11 @@ class Maze:
                     movements[nextSquareUp] = square
                 
                 # Ordenamos los casilleros a inspeccionar priorizando en la cola aquel
-                # que tenga un menor costo temporal, por lo tanto los ordenaremos de menor a mayor
+                # que tenga un mayor rapidez, por lo tanto los ordenaremos de mayor a mayor
 
                 squarePriorities = self.__compareCost(nextSquareRigth, nextSquareDown, nextSquareLeft, nextSquareUp)
 
-                # Agregamos a la cola los casilleros con menor costo primero
+                # Agregamos a la cola los casilleros con mayor rapidez primero
                 if squarePriorities is not None:
                     for squarePriority in reversed(squarePriorities):
                         queue.append(squarePriority)
@@ -257,8 +257,8 @@ class Maze:
                 # Info del nodo
                 text = '(' + str(self.__maze[p.x][p.y].x) + ', ' + str(self.__maze[p.x][p.y].y) + ', ' + str(self.__maze[p.x][p.y].cost) + ')'
                 
-                # Pintamos las casillas blanco
-                color = "red"
+                # Pintamos las casillas azules
+                color = "#798ec7"
 
                 img.rectangle(shape, fill = color, outline ="#658085")
                 img.text((b+5, a+40), text=text, font=font, fill = "black")
