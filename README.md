@@ -1,6 +1,6 @@
 # El camino más corto posible utilizando BFS
 
-Implementación de busqueda en anchura para escoger el camino más corto posible en una grilla.
+Implementación de busqueda en anchura (breadth first search) para escoger el camino más corto posible en una grilla.
 
 La idea es priorizar en la cola aquel casillero con menor costo.
 
