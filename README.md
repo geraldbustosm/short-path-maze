@@ -1,3 +1,11 @@
-# El camino más corto utilizando BFS
+# El camino más corto posible utilizando BFS
 
-Implementación de busqueda en anchura para escoger el camino más corto en una grilla.
+Implementación de busqueda en anchura para escoger el camino más corto posible en una grilla.
+
+La idea es priorizar en la cola aquel casillero con menor costo.
+
+Este problema en particular, sus casillas no son costos temporales, sino que corresponde a la rapidez con la que se puede avanzar si pasamos por dicha casilla. Por lo tanto, aquel casillero que tenga una mayor rapidez ira en la cola primero.
+
+Cabe destacar que avanzar siempre por el casillero más rapido no siempre promete el mejor camino. Para escoger la mejor es recomendable utilizar otros algoritmos como Dijkstra.
+
+![Tablero de 6x5](https://i.imgur.com/o3pjU21.png)
