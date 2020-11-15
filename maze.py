@@ -157,7 +157,7 @@ class Maze:
 
         # Tamaño de la grilla
         h = self.n * amplificator
-        w = 3 * gridWith + space
+        w = round(2.8 * gridWith) + space
         obstacleBorder = 95
         
         # Creando una imagen
